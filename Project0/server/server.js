@@ -1,10 +1,16 @@
 import express from 'express';
 import 'dotenv/config';
 import { db } from './dbConnect.js';
+import  userRouter from './routers/userRouter.js';
+
 const app = express();
 const PORT = 3000;
 
+
 app.use(express.json());
+
+app.use('/api/v1/users', userRouter);
+
 
 app.use("/test", (req, res) => {
     res.status(200).json({ message: 'Hello World' });
