@@ -1,30 +1,56 @@
 import { useState, useEffect } from "react";
-
+import { useForm } from "react-hook-form";
 import { Button, Fieldset, Input, Box } from "@chakra-ui/react";
 import { Field } from '../components/ui/field';
 
 const SignUp = () => {
+  const { register, handleSubmit, formState: { errors } } = useForm();
+
   const [usernameInput, setUsernameInput] = useState("");
   const [validUsername, setValidUsername] = useState(true);
+  const [usernameErrorText, setUsernameErrorText] = useState("");
 
   const [emailInput, setEmailInput] = useState("");
   const [validEmail, setValidEmail] = useState(true);
+  const [emailErrorText, setEmailErrorText] = useState("");
 
   const [passwordInput, setPasswordInput] = useState("");
   const [validPassword, setValidPassword] = useState(true);
-
+  const [passwordErrorText, setPasswordErrorText] = useState("");
 
   const [validFields, setValidFields] = useState(true);
 
+
   const validateUsername = () => {
-    setValidUsername(usernameInput !== "");
+    if (usernameInput === "") {
+      setValidUsername(false);
+      setUsernameErrorText("Username is required");
+    }
+    else {
+      setValidUsername(true);
+      setUsernameErrorText("");
+    }
   }
   
   const validateEmail = () => {
-    setValidEmail(emailInput !== "");
+    if (emailInput === "") {
+      setValidEmail(false);
+      setEmailErrorText("Email is required");
+    }
+    else{
+      setValidEmail(true);
+      setEmailErrorText("");
+    }
   }
   const validatePassword = () => {
-    setValidPassword(passwordInput !== "");
+    if(passwordInput === ""){ 
+      setValidPassword(false);
+      setPasswordErrorText("Password is required");
+    } 
+    else {
+      setValidPassword(true);
+      setPasswordErrorText("");
+    }
   }
 
   const validateFields = () => {
@@ -35,6 +61,7 @@ const SignUp = () => {
 
   useEffect(() => {
     setValidFields(validUsername && validPassword && validEmail);
+    
   }, [validUsername, validEmail, validPassword]);
 
   return (
@@ -47,15 +74,18 @@ const SignUp = () => {
           </Fieldset.HelperText>
           <Fieldset.Content>
             <Field label="Username" invalid={!validUsername}>
-              <Input name="username" onChange={(e) => setUsernameInput(e.target.value)} />
+              <Input id="username" {...register("username", { onChange: (e) => setUsernameInput(e.target.value) })}/>
+              <Fieldset.ErrorText>{usernameErrorText}</Fieldset.ErrorText>
             </Field>
 
             <Field label="Email address" invalid={!validEmail}>
-              <Input name="email" type="email" onChange={(e) => setEmailInput(e.target.value)}/>
+              <Input id="email" type="email" {...register("email", { onChange: (e) => setEmailInput(e.target.value) })}/>
+              <Fieldset.ErrorText>{emailErrorText}</Fieldset.ErrorText>
             </Field>
             
             <Field label="Password" invalid={!validPassword}>
-              <Input name="password" type="password" onChange={(e) => setPasswordInput(e.target.value)}/>
+              <Input id="password" type="password" {...register("password", { required: "Password is required", onChange: (e) => setPasswordInput(e.target.value) })}/>
+              <Fieldset.ErrorText>{passwordErrorText}</Fieldset.ErrorText>
             </Field>
           </Fieldset.Content>
           <Button type="submit" alignSelf="flex-start" onClick={validateFields}>
